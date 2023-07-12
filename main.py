@@ -1,4 +1,4 @@
-from longpoll_bot import LongPollBot
+# from longpoll_bot import LongPollBot
 from nlu_longpoll_bot import NLULongPollBot
 
 if __name__ == '__main__':

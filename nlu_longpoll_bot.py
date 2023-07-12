@@ -1,18 +1,26 @@
-from longpoll_bot import LongPollBot  # базовый класс бота из файла longpoll_bot
+"""
+Модуль добавляет классу LongPollBot дополнительный
+функционал для обработки часто встречающихся вопросов.
+"""
+# базовый класс бота из файла longpoll_bot
+from longpoll_bot import LongPollBot
 
-from sklearn.feature_extraction.text import TfidfVectorizer  # для векторизации текста
-from sklearn.linear_model import LogisticRegression  # для классификации намерений
-from vk_api.longpoll import VkEventType  # использование VkEventType
-import zipfile  # для распаковки архива датасета с диалогами
-import os.path  # для проверки наличия файла
-import random  # для генерации случайных ответов
-import nltk  # библиотека для естественной обработки языка
-import json  # представление в качестве JSON
+# для векторизации текста
+from sklearn.feature_extraction.text import TfidfVectorizer
+# для классификации намерений
+from sklearn.linear_model import LogisticRegression
+# использование VkEventType
+from vk_api.longpoll import VkEventType
+# для генерации случайных ответов
+import random
+# представление в качестве JSON
+import json
 
 
 class NLULongPollBot(LongPollBot):
     """
-    Бот, прослушивающий в бесконечном цикле входящие сообщения и способен отвечать на них.
+    Бот, прослушивающий в бесконечном цикле входящие сообщения,
+    способен отвечать на них.
     Бот обучен на заданном конфиге.
     """
 
@@ -22,7 +30,8 @@ class NLULongPollBot(LongPollBot):
     # классификатор запросов
     classifier = None
 
-    # порог вероятности, при котором на намерение пользователя будет отправляться ответ из bot_config
+    # порог вероятности, при котором на намерение пользователя
+    # будет отправляться ответ из bot_config
     threshold = 0.4
 
     # ведение статистики ответов
@@ -30,11 +39,11 @@ class NLULongPollBot(LongPollBot):
 
     def __init__(self):
         """
-        Иинициализация бота
+        Иинициализация бота.
         """
         super().__init__()
 
-        # можно загрузить конфиг из файла, если он большой
+        # Загрузка конфига из файла
         with open("bot_config.json", encoding="utf-8") as file:
             self.bot_config = json.load(file)
 
@@ -61,11 +70,14 @@ class NLULongPollBot(LongPollBot):
                     # вывод статистики
                     print(self.stats)
 
-    def get_bot_response(self, request: str):
+    def get_bot_response(self, request: str) -> str:
         """
-        Отправка ответа пользователю на его запрос с учётом статистики
-        :param request: запрос пользователя
-        :return: ответ для пользователя
+        Отправка ответа пользователю на его запрос с учётом статистики.
+
+        Args:
+            request: запрос пользователя
+        Returns:
+            ответ для пользователя
         """
         # определение намерения пользователя,
         # использование заготовленного ответа
@@ -80,51 +92,52 @@ class NLULongPollBot(LongPollBot):
 
     def get_intent(self, request: str):
         """
-        Получение наиболее вероятного намерения пользователя из сообщения
-        :param request: запрос пользователя
-        :return: наилучшее совпадение
+        Получение наиболее вероятного намерения пользователя из сообщения.
+
+        Args:
+            request: запрос пользователя
+        Returns:
+            наилучшее совпадение
         """
-        question_probabilities = self.classifier.predict_proba(self.vectorizer.transform([request]))[0]
+        question_probabilities = self.classifier.predict_proba(
+            self.vectorizer.transform([request]))[0]
         best_intent_probability = max(question_probabilities)
 
         if best_intent_probability > self.threshold:
-            best_intent_index = list(question_probabilities).index(best_intent_probability)
+            best_intent_index = list(question_probabilities).index(
+                                            best_intent_probability)
             best_intent = self.classifier.classes_[best_intent_index]
             return best_intent
 
         return None
 
-    def get_response_by_intent(self, intent: str):
+    def get_response_by_intent(self, intent: str) -> str:
         """
-        Получение случайного ответа на намерение пользователя
-        :param intent: намерение пользователя
-        :return: случайный ответ из прописанных для намерения
+        Получение случайного ответа на намерение пользователя.
+
+        Args:
+            intent: намерение пользователя
+        Returns:
+            случайный ответ из прописанных для намерения
         """
         phrases = self.bot_config["intents"][intent]["responses"]
         return random.choice(phrases)
 
-    def normalize_request(self, request):
-        """
-        Приведение запроса пользователя к нормальному виду путём избавления от лишних символов и смены регистра
-        :param request: запрос пользователя
-        :return: запрос пользователя в нижнем регистре без спец-символов
-        """
-        normalized_request = request.lower().strip()
-        alphabet = " -1234567890йцукенгшщзхъфывапролджэёячсмитьбю"
-        normalized_request = "".join(character for character in normalized_request if character in alphabet)
-        return normalized_request
-
     def get_failure_phrase(self):
         """
-        Если бот не может ничего ответить - будет отправлена случайная фраза из списка failure_phrases в bot_config
-        :return: случайная фраза в случае провала подбора ответа ботом
+        Если бот не может ничего ответить - будет отправлена случайная фраза
+        из списка failure_phrases в bot_config.
+
+            Returns:
+                случайная фраза в случае провала подбора ответа ботом
         """
         phrases = self.bot_config["failure_phrases"]
         return random.choice(phrases)
 
     def create_bot_config_corpus(self):
         """
-        Создание и обучение корпуса для бота, обученного на bot_config для дальнейшей обработки запросов пользователя
+        Создание и обучение корпуса для бота, обученного на bot_config
+        для дальнейшей обработки запросов пользователя.
         """
         corpus = []
         y = []

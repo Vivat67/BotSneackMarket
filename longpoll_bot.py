@@ -117,7 +117,7 @@ class LongPollBot():
         Args:
             user_id: id получателя сообщения
         """
-        self.send_msg(user_id, 'Сейчас Роман позвонит в СДЭК...')
+        self.send_msg(user_id, "...")
 
     def command_offer_week(self, user_id: int):
         """
