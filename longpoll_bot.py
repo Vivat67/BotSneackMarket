@@ -97,7 +97,7 @@ class LongPollBot():
         """
         attachments = []
         upload_image = self.upload.photo_messages(photos=image)[0]
-        self.attachments.append(
+        attachments.append(
             'photo{}_{}'.format(upload_image['owner_id'], upload_image['id']))
         return attachments[0]
 

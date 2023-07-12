@@ -3,8 +3,6 @@ from datetime import datetime
 import requests
 
 # Параметры авторизации клиента
-client_id = "5wf50vc39NELIQBP3OntHZPqW2i8KqIw"
-client_secret = "gQG79qjAXWZVR16cxtwIpD0vMWEYlAIR"
 grant_type = "client_credentials"
 
 # URL для отправки запроса авторизации
