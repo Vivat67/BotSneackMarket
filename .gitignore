@@ -8,4 +8,6 @@ dist/*
 **/*.env
 **/*.spec
 
-bot_corpus/dialogues.txt
+.vscode
+
+bot_config.json
