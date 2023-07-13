@@ -1,4 +1,4 @@
-.vscode/
+vscode/
 .idea/*
 __pycache__/
 
@@ -8,6 +8,5 @@ dist/*
 **/*.whl
 **/*.env
 **/*.spec
-
 
 bot_config.json
