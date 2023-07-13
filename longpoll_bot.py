@@ -41,7 +41,7 @@ class LongPollBot():
     upload = None
 
     def __init__(self):
-        """i
+        """
         Инициализация бота при помощи получения доступа к API ВКонтакте
         """
         # загрузка информации из .env-файла
@@ -117,7 +117,7 @@ class LongPollBot():
         Args:
             user_id: id получателя сообщения
         """
-        self.send_msg(user_id, "...")
+        self.send_msg(user_id, "В пизде!!")
 
     def command_offer_week(self, user_id: int):
         """
