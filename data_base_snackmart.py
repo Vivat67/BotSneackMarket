@@ -1,4 +1,4 @@
-from peewee import *  # создаем базу данных заказов: импортируем библиотеку пиви
+from peewee import Model, AutoField, IntegerField, CharField
 from config_db_snackmart import db
 
 
