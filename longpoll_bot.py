@@ -17,6 +17,8 @@ import os
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 # загрузка вложений(изображение)
 from vk_api.upload import VkUpload
+from cdek_tracking import CdekClient
+from data_base_snackmart import get_cdek_id_by_user_id
 
 
 class LongPollBot():
@@ -117,7 +119,12 @@ class LongPollBot():
         Args:
             user_id: id получателя сообщения
         """
-        self.send_msg(user_id, "В пизде!!")
+        cdek_client = CdekClient()
+        cdek_client.authorize()
+        cdek_number = str(get_cdek_id_by_user_id(user_id=4466946))
+        cdek_info = cdek_client.get_order_info(cdek_number)
+        print(cdek_info)
+        self.send_msg(user_id, cdek_info)
 
     def command_offer_week(self, user_id: int):
         """
