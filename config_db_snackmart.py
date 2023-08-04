@@ -1,5 +1,4 @@
 # подключаемся к БД на phpMyAdmin
-# создаем базу данных заказов: импортируем библиотеку пиви
 from peewee import MySQLDatabase
 db = MySQLDatabase(
     host="server102.hosting.reg.ru",
