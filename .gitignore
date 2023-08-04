@@ -10,3 +10,4 @@ dist/*
 **/*.spec
 
 bot_config.json
+config_db_snackmart.py
