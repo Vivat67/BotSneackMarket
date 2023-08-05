@@ -38,6 +38,8 @@ Language: ![https://img.shields.io/badge/Python-3.11-blue](https://img.shields.i
 2. Запустите код в своей IDE или консоли.
 3. Создайте файл **.env**  и разместите там **ACCESS_TOKEN**- 
 	токен вашего сообщества.
+4. Создайте файл config_db_snackmart.py с конфигурацией подключения
+   к базе данных.
 1. В файле main закомментируйте часть кода, которая вам не нужна.
 	И оставьте только одну из частей представленных ниже.
 ```Python
@@ -62,6 +64,8 @@ Language: ![https://img.shields.io/badge/Python-3.11-blue](https://img.shields.i
 2. longpoll_bot: класс бота только с клавиатурой.
 3. nlu_longpoll_bot: класс бота с клавиатурой и обученого на конфиге для ответа на простые вопросы.
 4. main: запуск бота.
+5. cdeck_tracking: api для подключения к CDEK.
+6. data_base_snackmart: заполнение базы данных и получение данных.
 
 ## Лицензия
 
