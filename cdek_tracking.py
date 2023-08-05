@@ -1,4 +1,3 @@
-# from datetime import datetime
 from dotenv import load_dotenv
 import os
 import requests
@@ -73,8 +72,6 @@ class CdekClient:
             date_time = last_status["date_time"]
             name = last_status["name"]
             original_datetime = date_time
-            # dt = datetime.strptime(original_datetime, "%Y-%m-%dT%H:%M:%S%z")
-            # formatted_datetime = dt.strftime("%d.%m.%Y в %H:%M")
             order_info = (
                 f"Информация о заказе:\n"
                 f"{original_datetime}\n"
