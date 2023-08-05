@@ -64,6 +64,8 @@ Language: ![https://img.shields.io/badge/Python-3.11-blue](https://img.shields.i
 2. longpoll_bot: класс бота только с клавиатурой.
 3. nlu_longpoll_bot: класс бота с клавиатурой и обученого на конфиге для ответа на простые вопросы.
 4. main: запуск бота.
+5. cdeck_tracking: api для подключения к CDEK.
+6. data_base_snackmart: заполнение базы данных и получение данных.
 
 ## Лицензия
 
