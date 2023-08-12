@@ -2,8 +2,10 @@
 Модуль добавляет классу LongPollBot дополнительный
 функционал для обработки часто встречающихся вопросов.
 """
-# базовый класс бота из файла longpoll_bot
-from longpoll_bot import LongPollBot
+# представление в качестве JSON
+import json
+# для генерации случайных ответов
+import random
 
 # для векторизации текста
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -11,10 +13,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 # использование VkEventType
 from vk_api.longpoll import VkEventType
-# для генерации случайных ответов
-import random
-# представление в качестве JSON
-import json
+
+# базовый класс бота из файла longpoll_bot
+from longpoll_bot import LongPollBot
 
 
 class NLULongPollBot(LongPollBot):
@@ -35,7 +36,7 @@ class NLULongPollBot(LongPollBot):
     threshold = 0.4
 
     # ведение статистики ответов
-    stats = {"intent": 0, "generative": 0, "failure": 0}
+    stats = {'intent': 0, 'generative': 0, 'failure': 0}
 
     def __init__(self):
         """
@@ -44,17 +45,17 @@ class NLULongPollBot(LongPollBot):
         super().__init__()
 
         # Загрузка конфига из файла
-        with open("bot_config.json", encoding="utf-8") as file:
+        with open('bot_config.json', encoding='utf-8') as file:
             self.bot_config = json.load(file)
 
         # обучение бота
         self.create_bot_config_corpus()
 
-    def run_long_poll(self):
+    def run_long_poll(self) -> None:
         """
         Запуск бота.
         """
-        print("Бот запущен!")
+        print('Бот запущен!')
         for event in self.longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                 if event.text == 'Где мой заказ?':
@@ -83,21 +84,21 @@ class NLULongPollBot(LongPollBot):
         # использование заготовленного ответа
         intent = self.get_intent(request)
         if intent:
-            self.stats["intent"] += 1
+            self.stats['intent'] += 1
             return self.get_response_by_intent(intent)
 
         # если бот не может подобрать ответ - отправляется ответ-заглушка
-        self.stats["failure"] += 1
+        self.stats['failure'] += 1
         return self.get_failure_phrase()
 
-    def get_intent(self, request: str):
+    def get_intent(self, request: str) -> str:
         """
         Получение наиболее вероятного намерения пользователя из сообщения.
 
         Args:
             request: запрос пользователя
         Returns:
-            наилучшее совпадение
+            best_intent: наилучшее совпадение
         """
         question_probabilities = self.classifier.predict_proba(
             self.vectorizer.transform([request]))[0]
@@ -109,8 +110,6 @@ class NLULongPollBot(LongPollBot):
             best_intent = self.classifier.classes_[best_intent_index]
             return best_intent
 
-        return None
-
     def get_response_by_intent(self, intent: str) -> str:
         """
         Получение случайного ответа на намерение пользователя.
@@ -120,10 +119,10 @@ class NLULongPollBot(LongPollBot):
         Returns:
             случайный ответ из прописанных для намерения
         """
-        phrases = self.bot_config["intents"][intent]["responses"]
+        phrases = self.bot_config['intents'][intent]['responses']
         return random.choice(phrases)
 
-    def get_failure_phrase(self):
+    def get_failure_phrase(self) -> str:
         """
         Если бот не может ничего ответить - будет отправлена случайная фраза
         из списка failure_phrases в bot_config.
@@ -131,10 +130,10 @@ class NLULongPollBot(LongPollBot):
             Returns:
                 случайная фраза в случае провала подбора ответа ботом
         """
-        phrases = self.bot_config["failure_phrases"]
+        phrases = self.bot_config['failure_phrases']
         return random.choice(phrases)
 
-    def create_bot_config_corpus(self):
+    def create_bot_config_corpus(self) -> None:
         """
         Создание и обучение корпуса для бота, обученного на bot_config
         для дальнейшей обработки запросов пользователя.
@@ -142,17 +141,17 @@ class NLULongPollBot(LongPollBot):
         corpus = []
         y = []
 
-        for intent, intent_data in self.bot_config["intents"].items():
-            for example in intent_data["examples"]:
+        for intent, intent_data in self.bot_config['intents'].items():
+            for example in intent_data['examples']:
                 corpus.append(example)
                 y.append(intent)
 
         # векторизация
-        self.vectorizer = TfidfVectorizer(analyzer="char", ngram_range=(2, 3))
+        self.vectorizer = TfidfVectorizer(analyzer='char', ngram_range=(2, 3))
         x = self.vectorizer.fit_transform(corpus)
 
         # классификация
         self.classifier = LogisticRegression()
         self.classifier.fit(x, y)
 
-        print("Обучение на файле конфигурации завершено")
+        print('Обучение на файле конфигурации завершено')
