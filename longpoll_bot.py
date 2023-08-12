@@ -3,20 +3,22 @@
 Применяется на платформе vk в сообществе СнэкМаркет.
 """
 
-# основной класс библотеки vk_api
-import vk_api
-# получение случайного id сообщения
-from vk_api.utils import get_random_id
-# работа с longpoll-сервером и отслеживание событий
-from vk_api.longpoll import VkLongPoll, VkEventType
-# загрузка информации из .env-файла
-from dotenv import load_dotenv
 # работа с файловой системой
 import os
+
+# основной класс библотеки vk_api
+import vk_api
+# загрузка информации из .env-файла
+from dotenv import load_dotenv
 # клавиатура
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
+# работа с longpoll-сервером и отслеживание событий
+from vk_api.longpoll import VkEventType, VkLongPoll
 # загрузка вложений(изображение)
 from vk_api.upload import VkUpload
+# получение случайного id сообщения
+from vk_api.utils import get_random_id
+
 from cdek_tracking import CdekClient
 from data_base_snackmart import get_cdek_id_by_user_id
 
@@ -42,6 +44,9 @@ class LongPollBot():
     # загрузка вложений (изоброжений)
     upload = None
 
+    # ссылка на магазин
+    STORE_ADDRESS = 'https://snackmart.ru/'
+
     def __init__(self):
         """
         Инициализация бота при помощи получения доступа к API ВКонтакте
@@ -62,7 +67,7 @@ class LongPollBot():
         # создание клавиатуры
         self.keyboard = VkKeyboard()
         self.keyboard.add_openlink_button('Покажи что есть?',
-                                          link='https://snackmart.ru/')
+                                          link=self.STORE_ADDRESS)
         self.keyboard.add_line()
         self.keyboard.add_button('Где мой заказ?',
                                  color=VkKeyboardColor.PRIMARY)
@@ -78,7 +83,7 @@ class LongPollBot():
         хранящуюся в файле настроек окружения .env,
         в виде строки ACCESS_TOKEN=""
 
-            Returns: возможность работать с API
+        Returns: возможность работать с API
         """
         token = os.getenv("ACCESS_TOKEN")
         try:
@@ -86,7 +91,6 @@ class LongPollBot():
             return self.vk_session.get_api()
         except Exception as error:
             print(error)
-            return None
 
     def create_image(self, image: str) -> str:
         """
@@ -121,6 +125,7 @@ class LongPollBot():
         """
         cdek_client = CdekClient()
         cdek_client.authorize()
+        # user_id=4466946 для примера
         cdek_number = str(get_cdek_id_by_user_id(user_id=4466946))
         cdek_info = cdek_client.get_order_info(cdek_number)
         print(cdek_info)

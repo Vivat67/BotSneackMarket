@@ -1,6 +1,7 @@
-from dotenv import load_dotenv
 import os
+
 import requests
+from dotenv import load_dotenv
 
 
 class CdekClient:
@@ -36,13 +37,12 @@ class CdekClient:
             auth_response_data = auth_response.json()
             self.access_token = auth_response_data["access_token"]
             return self.access_token
-        else:
-            return (
-                "Ошибка при выполнении запроса авторизации:",
-                auth_response.status_code,
-            )
+        return (
+            "Ошибка при выполнении запроса авторизации:",
+            auth_response.status_code,
+        )
 
-    def get_order_info(self, cdek_number: str):
+    def get_order_info(self, cdek_number: str) -> str:
         """
         Этот метод получает информацию о заказе по предоставленному
         трек-номеру CDEK (cdek_number).

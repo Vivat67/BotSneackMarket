@@ -15,17 +15,18 @@
 
     Примечание: Для корректной работы кода необходимо предоставить соединение
     с базой данных и конфигурацию (config_db_snackmart).
-    """
-from peewee import Model, AutoField, IntegerField, CharField
+"""
+from peewee import AutoField, CharField, IntegerField, Model
+
 from config_db_snackmart import db
 
 
 class Orders(Model):
     """
     Создание таблицы на сервере phpMyAdmin
-     помощью библиотеки Peewee под c с названием Orders с полями: id, user_id,
-     track_number_CDEK, phone_number, buyer_name, products и status_order.
-     """
+    помощью библиотеки Peewee под c с названием Orders с полями: id, user_id,
+    track_number_CDEK, phone_number, buyer_name, products и status_order.
+    """
     id = AutoField()
     user_id = IntegerField()
     track_number_CDEK = IntegerField()
@@ -39,7 +40,7 @@ class Orders(Model):
         table_name = 'orders'
 
 
-def get_cdek_id_by_user_id(user_id):
+def get_cdek_id_by_user_id(user_id) -> str:
     """
     Функция get_cdek_id_by_user_id(user_id) позволяет получить номер
     отслеживания CDEK для последующей проверки в функуии get_order_info.
@@ -53,5 +54,3 @@ def get_cdek_id_by_user_id(user_id):
     # если запись не найдена
     if order:
         return order.track_number_CDEK
-    else:
-        return None
