@@ -11,6 +11,10 @@ from dotenv import load_dotenv
 
 
 class CdekClient:
+    """
+    Класс предназначен для получения данных клиента от cdek по его номеру
+    заказа.
+    """
     def __init__(self):
         load_dotenv()
         self.client_id = os.getenv("CLIENT_ID")
