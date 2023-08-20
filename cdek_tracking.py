@@ -1,3 +1,9 @@
+"""
+Модуль предоставляет класс CdekClient для взаимодействия с CDEK API,
+включая аутентификацию и получение информации о заказах.
+Применяется на платформе vk в сообществе СнэкМаркет.
+"""
+
 import os
 
 import requests
@@ -11,7 +17,7 @@ class CdekClient:
         self.client_secret = os.getenv("CLIENT_SECRET")
         self.access_token = None
 
-    def authorize(self):
+    def authorize(self) -> None:
         """
         Этот метод выполняет процесс аутентификации OAuth 2.0 для получения
         токена доступа от CDEK API.
@@ -42,18 +48,15 @@ class CdekClient:
             auth_response.status_code,
         )
 
-    def get_order_info(self, cdek_number: str) -> str:
+    def get_order_info(self, cdek_number: str) -> object:
         """
         Этот метод получает информацию о заказе по предоставленному
         трек-номеру CDEK (cdek_number).
 
         Для использования этого метода клиент должен быть авторизован, то есть
-        метод authorize должен быть успешно
-        вызван перед его использованием.
+        метод authorize должен быть успешно вызван перед его использованием.
         Метод отправляет GET-запрос к CDEK API, передавая трек-номер и токен
         доступа в заголовках запроса.
-        Затем он разбирает JSON-ответ и извлекает информацию о заказе,
-        такую как последний статус, город и дата/время.
 
         Args:
             cdek_number: трек-номер заказа в СДЕК
@@ -67,21 +70,36 @@ class CdekClient:
         data = response.json()
 
         if response.status_code == 200:
-            last_status = data["entity"]["statuses"][0]
-            city = last_status["city"]
-            date_time = last_status["date_time"]
-            name = last_status["name"]
-            original_datetime = date_time
-            order_info = (
-                f"Информация о заказе:\n"
-                f"{original_datetime}\n"
-                f"Город/населенный пункт: {city}\n"
-                f"Статус заказа: {name}"
-            )
-            return order_info
-        else:
-            return (
-                "Ошибка при получении информации о заказе:",
-                response.status_code,
-                data,
-            )
+            return self._parse_order_info(data)
+
+        return (
+            "Ошибка при получении информации о заказе:",
+            response.status_code,
+            data,
+        )
+
+    @staticmethod
+    def _parse_order_info(data: dict) -> str:
+        """
+        Разбор JSON-ответа и извлечение информации о заказе,
+        такую как последний статус, город и дата/время.
+
+        Args:
+            data (dict): JSON-данные ответа от CDEK API.
+
+        Returns:
+            str: Информация о заказе.
+        """
+        last_status = data["entity"]["statuses"][0]
+        city = last_status["city"]
+        date_time = last_status["date_time"]
+        name = last_status["name"]
+        original_datetime = date_time
+
+        order_info = (
+            f"Информация о заказе:\n"
+            f"{original_datetime}\n"
+            f"Город/населенный пункт: {city}\n"
+            f"Статус заказа: {name}"
+        )
+        return order_info

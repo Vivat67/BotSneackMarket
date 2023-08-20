@@ -77,7 +77,7 @@ class LongPollBot():
         self.keyboard.add_button('Контакты',
                                  color=VkKeyboardColor.NEGATIVE)
 
-    def do_auth(self):
+    def do_auth(self) -> None:
         """
         Авторизация сообщества. Использует переменную,
         хранящуюся в файле настроек окружения .env,
@@ -107,7 +107,7 @@ class LongPollBot():
             'photo{}_{}'.format(upload_image['owner_id'], upload_image['id']))
         return attachments[0]
 
-    def contacts(self, user_id: int):
+    def contacts(self, user_id: int) -> None:
         """
         Ответ пользователю на ввод команды "Контакты"
 
@@ -131,7 +131,7 @@ class LongPollBot():
         print(cdek_info)
         self.send_msg(user_id, cdek_info)
 
-    def command_offer_week(self, user_id: int):
+    def command_offer_week(self, user_id: int) -> None:
         """
         Ответ пользователю на ввод команды "Предложение недели"
 
@@ -140,7 +140,7 @@ class LongPollBot():
         """
         self.send_sticker(user_id, '8014')
 
-    def send_msg(self, user_id: int, message: str):
+    def send_msg(self, user_id: int, message: str) -> None:
         """
         Отправка сообщения пользователю.
         Добавляет клавиатуру.
@@ -158,7 +158,7 @@ class LongPollBot():
                                'keyboard': self.keyboard.get_keyboard()
                                })
 
-    def send_image(self, user_id: int, message: str):
+    def send_image(self, user_id: int, message: str) -> None:
         """
         Отправка сообщения пользователю.
         Добавляет изображение.
@@ -177,7 +177,7 @@ class LongPollBot():
                                             'image/ebenya.webp')
                                })
 
-    def send_sticker(self, user_id: int, sticker_id: int):
+    def send_sticker(self, user_id: int, sticker_id: int) -> None:
         """
         Отправка стикера пользователю.
 
@@ -191,7 +191,7 @@ class LongPollBot():
                                'sticker_id': sticker_id,
                                'random_id': get_random_id()})
 
-    def run_bot(self):
+    def run_bot(self) -> None:
         """
         Запуск бота.
         """
