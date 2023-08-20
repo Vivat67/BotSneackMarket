@@ -74,7 +74,9 @@ Language: ![https://img.shields.io/badge/Python-3.11-blue](https://img.shields.i
 ## Авторы
 
 **Ездаков В.В.**,
+
 **Роман Яковлев** https://github.com/Rodan3D,
+
 **Артем Чернышев** https://github.com/ArtemChernyschev.
 
 ## Диагностика
